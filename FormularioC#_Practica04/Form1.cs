@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -17,6 +18,102 @@ namespace FormularioC__Practica04
         public Form1()
         {
             InitializeComponent();
+
+            tbNombre.TextChanged += validarNombre;
+            tbApellidos.TextChanged += validarApellidos;
+            tbEdad.TextChanged += validarEdad;
+            tbEstatura.TextChanged += validarEstatura;
+            tbTelefono.TextChanged += validarTelefono;
+
+        }
+
+        private bool EsEnteroValido (string valor)
+        {
+            int resultado;
+            return int.TryParse(valor, out resultado);
+        }
+
+        private bool EsDecimalValido(string valor)
+        {
+            decimal resultado;
+            return decimal.TryParse(valor, out resultado);
+        }
+
+        private bool EsTextoValido(string valor)
+        {
+            return Regex.IsMatch(valor, @"^[a-zA-Z\s]+$");
+        }
+
+        private bool EsEnteroValidoDe10Digitos(string valor)
+        {
+            long result;
+            return long.TryParse(valor, out result) && valor.Length == 10;
+        }
+
+        private void validarNombre(object sender, EventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            if (!EsTextoValido(textBox.Text))
+            {
+                MessageBox.Show("Por favor ingresa un nombre valido (solo letras y espacios).", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textBox.Clear();
+            }
+
+        }
+        private void validarApellidos(object sender, EventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            if (!EsTextoValido(textBox.Text))
+            {
+                MessageBox.Show("Por favor ingresa apellidos validos (solo letras y espacios).", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textBox.Clear();
+            }
+
+        }
+        private void validarEdad(object sender, EventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            if (!EsEnteroValido(textBox.Text))
+            {
+                MessageBox.Show("Por favor ingresa una edad valida.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textBox.Clear();
+            }
+
+        }
+        private void validarEstatura(object sender, EventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            if (!EsDecimalValido(textBox.Text))
+            {
+                MessageBox.Show("Por favor ingresa una estatura valida.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                textBox.Clear();
+            }
+
+        }
+        private void validarTelefono(object sender, EventArgs e)
+        {
+            TextBox textBox = (TextBox)sender;
+            string input = textBox.Text;
+            //if (input.Length == 10)
+            if (textBox.Text.Length == 10 && EsEnteroValidoDe10Digitos (textBox.Text))
+            {
+                textBox.BackColor = Color.Green;
+                //if (!EsEnteroValidoDe10Digitos(input))
+               // {
+                 //   MessageBox.Show("Por favor ingrese un numero de telefono valido de 10 digitos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //textBox.Clear();
+               // }
+              // else if (!EsEnteroValidoDe10Digitos(input))
+                //{
+               //     MessageBox.Show("Por favor ingrese un numero de telefono valido de 10 digitos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+               // }
+                
+            }
+            else
+            {
+                textBox.BackColor= Color.Red;
+            }
+
         }
 
         private void bGuardar_Click(object sender, EventArgs e)
